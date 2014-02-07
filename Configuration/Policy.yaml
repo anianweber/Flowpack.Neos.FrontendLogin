@@ -14,3 +14,6 @@ acls:
   User:
     methods:
       Wwwision_Neos_FrontendLogin_UserProfile: GRANT
+  'TYPO3.Neos:Editor':
+    methods:
+      Wwwision_Neos_FrontendLogin_UserProfile: GRANT
