@@ -22,3 +22,7 @@ TYPO3:
       autoInclude:
           # auto-include "Private/Resources/TypoScript/Root.ts2" from this package!
         'Wwwision.Neos.FrontendLogin': TRUE
+
+  TypoScript:
+    rendering:
+      exceptionHandler: 'TYPO3\TypoScript\Core\ExceptionHandlers\ThrowingHandler'

@@ -1,6 +1,6 @@
 resources:
   methods:
-    Wwwision_Neos_FrontendLogin_LoginForm: 'method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(index|authenticate|logout)Action())'
+    Wwwision_Neos_FrontendLogin_LoginForm: 'method(TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController->(?<!initialize).*Action()) || method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(index|authenticate|logout)Action())'
     Wwwision_Neos_FrontendLogin_UserProfile: 'method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(profile)Action())'
 
 roles:
