@@ -18,6 +18,20 @@ How-To:
 
 Now you should be able to test the frontend login by navigating to ``/login.html``
 
+Rewriting the template path to your package:
+--------------------------------------------
+
+You might want to modify the template(s) according to your needs. Create a ``Views.yaml`` file and
+add the following configuration there:
+
+    -
+      requestFilter: 'isPackage("Wwwision.Neos.FrontendLogin") && isController("Login") && isAction("index")'
+      options:
+        templatePathAndFilename: 'resource://Acme.YourPackage/Private/Templates/Login/Index.html'
+
+Adjust the actual value in ``templatePathAndFilename`` to your needs. The same procedure would go
+to the ``Profile`` action, just add another such configuration with ``isAction("index")``.
+
 Known issues:
 -------------
 
