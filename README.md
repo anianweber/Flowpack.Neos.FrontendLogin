@@ -41,6 +41,7 @@ to the ``Profile`` action, just add another such configuration with ``isAction("
 Known issues:
 -------------
 
+* Currently TYPO3 Neos & Flow have various caches that won't respect authenticated users, so you'll get weird results e.g. when rendering a protected page in a menu (https://review.typo3.org/#/q/status:open+topic:%22fe-login+(NEOS-433)%22 resolves that)
 * You can be logged in in backend *and* frontend with different accounts! But if you logout one, the other one is logged out as well
 * If you try to access the page with the protected profile view w/o authentication you won't be redirected but a (in production mode hidden) exception message is rendered. If you set the TypoScript exceptionHandler to ``ThrowingHandler`` this can be worked around though
 * ~~The "profile" plugin view renders an "Access denied" exception in backend~~ This is fixed with 619b026ce7
