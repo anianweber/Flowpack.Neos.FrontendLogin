@@ -3,6 +3,12 @@ Wwwision.Neos.FrontendLogin
 
 TYPO3 Neos plugin demonstrating a simple "frontend login"
 
+DISCLAIMER:
+-----------
+
+This is just a very basic *prototype* to see how far we could get without adjustments to the core. It has various limitations and you should think twice before using it in productive applications.
+The good news is: We're working hard on proper support for Frontend-Logins and will hopefully integrate that into the next version of TYPO3 Neos (feel free to get in touch with me if you need this and want to sponsor some of the work).
+
 How-To:
 -------
 
