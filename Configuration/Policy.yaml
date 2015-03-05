@@ -1,23 +1,31 @@
-
 privilegeTargets:
-  TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
-    Wwwision_Neos_FrontendLogin_LoginForm:
-      matcher: 'method(TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController->(?<!initialize).*Action()) || method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(index|authenticate|logout)Action())'
-    Wwwision_Neos_FrontendLogin_UserProfile:
-      matcher: method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(profile)Action())
+
+  'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+
+    'Wwwision.Neos.FrontendLogin:LoginForm':
+      matcher: 'method(TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController->(?<!initialize).*Action()) || method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(?<!initialize).*Action())'
+    'Wwwision.Neos.FrontendLogin:UserProfile':
+      matcher: 'method(Wwwision\Neos\FrontendLogin\Controller\UserController->(?<!initialize).*Action())'
+
 roles:
-  'Wwwision.Neos.FrontendLogin:User':
-    privileges:
-      -
-        privilegeTarget: Wwwision_Neos_FrontendLogin_UserProfile
-        permission: GRANT
+
   'TYPO3.Flow:Everybody':
     privileges:
       -
-        privilegeTarget: Wwwision_Neos_FrontendLogin_LoginForm
+          # Grant any user access to the FrontendLoginLoginForm plugin
+        privilegeTarget: 'Wwwision.Neos.FrontendLogin:LoginForm'
         permission: GRANT
+
+  'Wwwision.Neos.FrontendLogin:User':
+    privileges:
+      -
+          # Grant "frontend users" access to the FrontendLoginProfile plugin
+        privilegeTarget: 'Wwwision.Neos.FrontendLogin:UserProfile'
+        permission: GRANT
+
   'TYPO3.Neos:Editor':
     privileges:
       -
-        privilegeTarget: Wwwision_Neos_FrontendLogin_UserProfile
+          # Grant "backend users" access to the FrontendLoginProfile plugin - the login form plugin is granted to Everybody (see above)
+        privilegeTarget: 'Wwwision.Neos.FrontendLogin:UserProfile'
         permission: GRANT

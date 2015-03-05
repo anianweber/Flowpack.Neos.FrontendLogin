@@ -1,0 +1,5 @@
+prototype(Wwwision.Neos.FrontendLogin:Profile) < prototype(Plugin) {
+	package = 'Wwwision.Neos.FrontendLogin'
+	controller = 'User'
+	action = 'show'
+}

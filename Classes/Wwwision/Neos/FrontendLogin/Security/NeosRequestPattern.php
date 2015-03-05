@@ -1,6 +1,10 @@
 <?php
 namespace Wwwision\Neos\FrontendLogin\Security;
 
+/*                                                                             *
+ * This script belongs to the TYPO3 Flow package "Wwwision.Neos.FrontendLogin".*
+ *                                                                             */
+
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\RequestInterface;
 use TYPO3\Flow\Security\RequestPatternInterface;

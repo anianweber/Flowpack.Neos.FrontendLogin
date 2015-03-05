@@ -7,22 +7,16 @@ TYPO3:
           'Typo3BackendProvider':
             requestPatterns:
               'Wwwision\Neos\FrontendLogin\Security\NeosRequestPattern': 'backend'
-          'FrontendLoginProvider':
+          'Wwwision.Neos.FrontendLogin:Frontend':
             provider: 'PersistedUsernamePasswordProvider'
             requestPatterns:
               'Wwwision\Neos\FrontendLogin\Security\NeosRequestPattern': 'frontend'
-            entryPoint: 'WebRedirect'
-            entryPointOptions:
-               # adjust this to the URI with the frontend login form
-              uri: 'login.html'
 
+    aop:
+      globalObjects:
+        'frontendUserService': 'Wwwision\Neos\FrontendLogin\Domain\Service\UserService'
 
   Neos:
     typoScript:
       autoInclude:
-          # auto-include "Private/Resources/TypoScript/Root.ts2" from this package!
         'Wwwision.Neos.FrontendLogin': TRUE
-
-  TypoScript:
-    rendering:
-      exceptionHandler: 'TYPO3\TypoScript\Core\ExceptionHandlers\ThrowingHandler'

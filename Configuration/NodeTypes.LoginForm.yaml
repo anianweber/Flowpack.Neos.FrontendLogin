@@ -1,0 +1,8 @@
+##
+# A simple "Login form" plugin that demonstrates "Frontend authorization"
+#
+'Wwwision.Neos.FrontendLogin:LoginForm':
+  superTypes: ['TYPO3.Neos:Plugin']
+  ui:
+    label: 'Frontend login form'
+    icon: 'icon-key'

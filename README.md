@@ -6,23 +6,57 @@ TYPO3 Neos plugin demonstrating a simple "frontend login"
 DISCLAIMER:
 -----------
 
-This is just a very basic *prototype* to see how far we could get without adjustments to the core. It has various limitations and you should think twice before using it in productive applications.
-The good news is: We're working hard on proper support for Frontend-Logins and will hopefully integrate that into the next version of TYPO3 Neos (feel free to get in touch with me if you need this and want to sponsor some of the work).
+This is just a basic *prototype* with various limitation. You should think twice before using it in productive applications.
+The good news is: We're working hard on improving support for Frontend-Logins.
 
 How-To:
 -------
 
-* Install the package to ``Packages/Plugin/Wwwision.Neos.FrontendLogin``
-* Login to the TYPO3 Neos backend and create a new page ``/login``
+* Install the package to ``Packages/Plugin/Wwwision.Neos.FrontendLogin`` (e.g. via ``composer require wwwision/neos-frontendlogin:dev-master``)
+* Run database migrations: ``./flow doctrine:migrate``
+* Login to the TYPO3 Neos backend and create a new page "Login" (e.g. at ``/login``)
 * On that page insert the new plugin ``Frontend login form``
-* Somewhere else create a page "User Profile" and tick the ``hidden in index`` checkbox
-* On that page insert a ``Plugin View`` and select the "User profile (protected)" view from the "Frontend login form" plugin in the inspector
+* Create a page "User Profile" (e.g. at ``/members/profile``)
+* On that page insert the plugin ``Frontend user profile``
 * Publish all changes
-* Create a new account (you can use the ``user:create`` command an then adjust via db)
- * authenticationProviderName: ``FrontendLoginProvider``
- * roles: [``Wwwision.Neos.FrontendLogin:User``]
+* Create a new Frontend User (you can use the ``frontenduser:create`` command, e.g. ``./flow frontenduser:create user password Your Name``)
 
 Now you should be able to test the frontend login by navigating to ``/login.html``
+
+Hide 
+----------------
+
+If you want to create a "member area" that is only visible to authenticated frontend users, add the following ``Policy.yaml`` to your site package:
+
+```yaml
+privilegeTargets:
+
+  'TYPO3\TYPO3CR\Security\Authorization\Privilege\Node\ReadNodePrivilege':
+
+    'Acme.YourPackage:MembersArea':
+      matcher: 'isDescendantNodeOf("/sites/yoursite/some/path")'
+
+
+roles:
+
+  'Wwwision.Neos.FrontendLogin:User':
+    privileges:
+      -
+          # Grant "frontend users" access to the "Member area"
+        privilegeTarget: 'Acme.YourPackage:MembersArea'
+        permission: GRANT
+
+
+  'TYPO3.Neos:Editor':
+
+    privileges:
+      -
+          # Grant "backend users" to access the "Member area" - Otherwise those pages would be hidden in the backend, too!
+        privilegeTarget: 'Acme.YourPackage:MembersArea'
+        permission: GRANT
+```
+
+**Note:** Replace "Acme.YourPackage" with the package key of your site package and replace "/sites/yoursite/some/path" with the absolute node path of the "member area". The specified node and all its child-nodes will be hidden from anonymous users!
 
 Rewriting the template path to your package:
 --------------------------------------------
@@ -30,10 +64,12 @@ Rewriting the template path to your package:
 You might want to modify the template(s) according to your needs. Create a ``Views.yaml`` file and
 add the following configuration there:
 
-    -
-      requestFilter: 'isPackage("Wwwision.Neos.FrontendLogin") && isController("Login") && isAction("index")'
-      options:
-        templatePathAndFilename: 'resource://Acme.YourPackage/Private/Templates/Login/Index.html'
+```yaml
+-
+  requestFilter: 'isPackage("Wwwision.Neos.FrontendLogin") && isController("Login") && isAction("index")'
+  options:
+    templatePathAndFilename: 'resource://Acme.YourPackage/Private/Templates/Login/Index.html'
+```
 
 Adjust the actual value in ``templatePathAndFilename`` to your needs. The same procedure would go
 to the ``Profile`` action, just add another such configuration with ``isAction("index")``.
@@ -41,8 +77,4 @@ to the ``Profile`` action, just add another such configuration with ``isAction("
 Known issues:
 -------------
 
-* Currently TYPO3 Neos & Flow have various caches that won't respect authenticated users, so you'll get weird results e.g. when rendering a protected page in a menu (https://review.typo3.org/#/q/status:open+topic:%22fe-login+(NEOS-433)%22 resolves that)
-* You can be logged in in backend *and* frontend with different accounts! But if you logout one, the other one is logged out as well
 * If you try to access the page with the protected profile view w/o authentication you won't be redirected but a (in production mode hidden) exception message is rendered. If you set the TypoScript exceptionHandler to ``ThrowingHandler`` this can be worked around though
-* ~~The "profile" plugin view renders an "Access denied" exception in backend~~ This is fixed with 619b026ce7
-* ~~The "logout" button in the profile view doesn't work due to an access denied exception~~ This is fixed with 9134826e29 (thanks to Pavlina)

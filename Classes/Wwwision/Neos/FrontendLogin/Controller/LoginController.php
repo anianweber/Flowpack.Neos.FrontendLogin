@@ -1,6 +1,12 @@
 <?php
 namespace Wwwision\Neos\FrontendLogin\Controller;
 
+/*                                                                             *
+ * This script belongs to the TYPO3 Flow package "Wwwision.Neos.FrontendLogin".*
+ *                                                                             */
+
+use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Error\Message;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 
@@ -13,12 +19,6 @@ class LoginController extends AbstractAuthenticationController {
 	 * @return void
 	 */
 	public function indexAction() {
-	}
-
-	/**
-	 * @return void
-	 */
-	public function profileAction() {
 		$this->view->assign('account', $this->securityContext->getAccount());
 	}
 
@@ -27,7 +27,7 @@ class LoginController extends AbstractAuthenticationController {
 	 */
 	public function logoutAction() {
 		parent::logoutAction();
-		$this->addFlashMessage('Successfully logged out', 'Logout');
+		$this->addFlashMessage('Successfully logged out', 'Logged out', Message::SEVERITY_NOTICE);
 		$this->redirect('index');
 	}
 
@@ -36,7 +36,16 @@ class LoginController extends AbstractAuthenticationController {
 	 * @return string
 	 */
 	protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL) {
-		$this->addFlashMessage('Successfully logged in', 'Login');
-		$this->redirect('profile');
+		$this->addFlashMessage('Successfully logged in', 'Logged in');
+		$this->redirect('index');
+	}
+
+	/**
+	 * Disable the technical error flash message
+	 *
+	 * @return boolean
+	 */
+	protected function getErrorFlashMessage() {
+		return FALSE;
 	}
 }
