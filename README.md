@@ -77,4 +77,4 @@ to the ``Profile`` action, just add another such configuration with ``isAction("
 Known issues:
 -------------
 
-* If you try to access the page with the protected profile view w/o authentication you won't be redirected but a (in production mode hidden) exception message is rendered. If you set the TypoScript exceptionHandler to ``ThrowingHandler`` this can be worked around though
+* If you use the ``ReadNodePrivilege`` to protect the "member area" and navigate to a protected page Neos issues a 500 error instead of 404
