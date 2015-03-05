@@ -1,19 +1,23 @@
-resources:
-  methods:
-    Wwwision_Neos_FrontendLogin_LoginForm: 'method(TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController->(?<!initialize).*Action()) || method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(index|authenticate|logout)Action())'
-    Wwwision_Neos_FrontendLogin_UserProfile: 'method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(profile)Action())'
 
+privilegeTargets:
+  TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
+    Wwwision_Neos_FrontendLogin_LoginForm:
+      matcher: 'method(TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController->(?<!initialize).*Action()) || method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(index|authenticate|logout)Action())'
+    Wwwision_Neos_FrontendLogin_UserProfile:
+      matcher: method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(profile)Action())
 roles:
-  User: []
-
-acls:
-  Everybody:
-    methods:
-      # we need to explicitly allow access to the public actions because by default all actions are denied by the Neos policies
-      Wwwision_Neos_FrontendLogin_LoginForm: GRANT
-  User:
-    methods:
-      Wwwision_Neos_FrontendLogin_UserProfile: GRANT
+  'Wwwision.Neos.FrontendLogin:User':
+    privileges:
+      -
+        privilegeTarget: Wwwision_Neos_FrontendLogin_UserProfile
+        permission: GRANT
+  'TYPO3.Flow:Everybody':
+    privileges:
+      -
+        privilegeTarget: Wwwision_Neos_FrontendLogin_LoginForm
+        permission: GRANT
   'TYPO3.Neos:Editor':
-    methods:
-      Wwwision_Neos_FrontendLogin_UserProfile: GRANT
+    privileges:
+      -
+        privilegeTarget: Wwwision_Neos_FrontendLogin_UserProfile
+        permission: GRANT
