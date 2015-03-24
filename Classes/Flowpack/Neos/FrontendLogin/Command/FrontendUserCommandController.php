@@ -1,14 +1,14 @@
 <?php
-namespace Wwwision\Neos\FrontendLogin\Command;
+namespace Flowpack\Neos\FrontendLogin\Command;
 
 /*                                                                             *
- * This script belongs to the TYPO3 Flow package "Wwwision.Neos.FrontendLogin".*
+ * This script belongs to the TYPO3 Flow package "Flowpack.Neos.FrontendLogin".*
  *                                                                             */
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
-use Wwwision\Neos\FrontendLogin\Domain\Model\User;
-use Wwwision\Neos\FrontendLogin\Domain\Service\UserService;
+use Flowpack\Neos\FrontendLogin\Domain\Model\User;
+use Flowpack\Neos\FrontendLogin\Domain\Service\FrontendUserService;
 
 /**
  * @Flow\Scope("singleton")
@@ -17,7 +17,7 @@ class FrontendUserCommandController extends CommandController {
 
 	/**
 	 * @Flow\Inject
-	 * @var UserService
+	 * @var FrontendUserService
 	 */
 	protected $userService;
 

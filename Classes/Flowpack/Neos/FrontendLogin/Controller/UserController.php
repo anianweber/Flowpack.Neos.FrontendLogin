@@ -1,14 +1,14 @@
 <?php
-namespace Wwwision\Neos\FrontendLogin\Controller;
+namespace Flowpack\Neos\FrontendLogin\Controller;
 
 /*                                                                             *
- * This script belongs to the TYPO3 Flow package "Wwwision.Neos.FrontendLogin".*
+ * This script belongs to the TYPO3 Flow package "Flowpack.Neos.FrontendLogin".*
  *                                                                             */
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Mvc\Controller\ActionController;
-use Wwwision\Neos\FrontendLogin\Domain\Model\User;
-use Wwwision\Neos\FrontendLogin\Domain\Service\UserService;
+use Flowpack\Neos\FrontendLogin\Domain\Model\User;
+use Flowpack\Neos\FrontendLogin\Domain\Service\FrontendUserService;
 
 /**
  * Controller for displaying a simple user profile for frontend users
@@ -17,7 +17,7 @@ class UserController extends ActionController {
 
 	/**
 	 * @Flow\Inject
-	 * @var UserService
+	 * @var FrontendUserService
 	 */
 	protected $userService;
 

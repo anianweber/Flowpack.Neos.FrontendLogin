@@ -2,10 +2,10 @@ privilegeTargets:
 
   'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
 
-    'Wwwision.Neos.FrontendLogin:LoginForm':
-      matcher: 'method(TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController->(?<!initialize).*Action()) || method(Wwwision\Neos\FrontendLogin\Controller\LoginController->(?<!initialize).*Action())'
-    'Wwwision.Neos.FrontendLogin:UserProfile':
-      matcher: 'method(Wwwision\Neos\FrontendLogin\Controller\UserController->(?<!initialize).*Action())'
+    'Flowpack.Neos.FrontendLogin:LoginForm':
+      matcher: 'method(TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController->(?<!initialize).*Action()) || method(Flowpack\Neos\FrontendLogin\Controller\LoginController->(?<!initialize).*Action())'
+    'Flowpack.Neos.FrontendLogin:UserProfile':
+      matcher: 'method(Flowpack\Neos\FrontendLogin\Controller\UserController->(?<!initialize).*Action())'
 
 roles:
 
@@ -13,19 +13,19 @@ roles:
     privileges:
       -
           # Grant any user access to the FrontendLoginLoginForm plugin
-        privilegeTarget: 'Wwwision.Neos.FrontendLogin:LoginForm'
+        privilegeTarget: 'Flowpack.Neos.FrontendLogin:LoginForm'
         permission: GRANT
 
-  'Wwwision.Neos.FrontendLogin:User':
+  'Flowpack.Neos.FrontendLogin:User':
     privileges:
       -
           # Grant "frontend users" access to the FrontendLoginProfile plugin
-        privilegeTarget: 'Wwwision.Neos.FrontendLogin:UserProfile'
+        privilegeTarget: 'Flowpack.Neos.FrontendLogin:UserProfile'
         permission: GRANT
 
   'TYPO3.Neos:Editor':
     privileges:
       -
           # Grant "backend users" access to the FrontendLoginProfile plugin - the login form plugin is granted to Everybody (see above)
-        privilegeTarget: 'Wwwision.Neos.FrontendLogin:UserProfile'
+        privilegeTarget: 'Flowpack.Neos.FrontendLogin:UserProfile'
         permission: GRANT

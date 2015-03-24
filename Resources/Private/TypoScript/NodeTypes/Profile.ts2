@@ -1,5 +1,5 @@
-prototype(Wwwision.Neos.FrontendLogin:Profile) < prototype(Plugin) {
-	package = 'Wwwision.Neos.FrontendLogin'
+prototype(Flowpack.Neos.FrontendLogin:Profile) < prototype(Plugin) {
+	package = 'Flowpack.Neos.FrontendLogin'
 	controller = 'User'
 	action = 'show'
 }

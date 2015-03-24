@@ -1,8 +1,8 @@
 <?php
-namespace Wwwision\Neos\FrontendLogin\Controller;
+namespace Flowpack\Neos\FrontendLogin\Controller;
 
 /*                                                                             *
- * This script belongs to the TYPO3 Flow package "Wwwision.Neos.FrontendLogin".*
+ * This script belongs to the TYPO3 Flow package "Flowpack.Neos.FrontendLogin".*
  *                                                                             */
 
 use TYPO3\Flow\Annotations as Flow;

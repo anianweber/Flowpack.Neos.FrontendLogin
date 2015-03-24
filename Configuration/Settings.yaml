@@ -6,17 +6,17 @@ TYPO3:
         providers:
           'Typo3BackendProvider':
             requestPatterns:
-              'Wwwision\Neos\FrontendLogin\Security\NeosRequestPattern': 'backend'
-          'Wwwision.Neos.FrontendLogin:Frontend':
+              'Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern': 'backend'
+          'Flowpack.Neos.FrontendLogin:Frontend':
             provider: 'PersistedUsernamePasswordProvider'
             requestPatterns:
-              'Wwwision\Neos\FrontendLogin\Security\NeosRequestPattern': 'frontend'
+              'Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern': 'frontend'
 
     aop:
       globalObjects:
-        'frontendUserService': 'Wwwision\Neos\FrontendLogin\Domain\Service\UserService'
+        'frontendUserService': 'Flowpack\Neos\FrontendLogin\Domain\Service\UserService'
 
   Neos:
     typoScript:
       autoInclude:
-        'Wwwision.Neos.FrontendLogin': TRUE
+        'Flowpack.Neos.FrontendLogin': TRUE

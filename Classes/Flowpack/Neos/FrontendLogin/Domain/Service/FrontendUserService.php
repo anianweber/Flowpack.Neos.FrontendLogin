@@ -1,8 +1,8 @@
 <?php
-namespace Wwwision\Neos\FrontendLogin\Domain\Service;
+namespace Flowpack\Neos\FrontendLogin\Domain\Service;
 
 /*                                                                             *
- * This script belongs to the TYPO3 Flow package "Wwwision.Neos.FrontendLogin".*
+ * This script belongs to the TYPO3 Flow package "Flowpack.Neos.FrontendLogin".*
  *                                                                             */
 
 use TYPO3\Flow\Annotations as Flow;
@@ -14,21 +14,20 @@ use TYPO3\Flow\Security\Context;
 use TYPO3\Flow\Security\Cryptography\HashService;
 use TYPO3\Flow\Security\Policy\PolicyService;
 use TYPO3\Flow\Utility\Now;
-use Wwwision\Neos\FrontendLogin\Domain\Model\User;
-use Wwwision\Neos\FrontendLogin\Domain\Repository\UserRepository;
+use Flowpack\Neos\FrontendLogin\Domain\Model\User;
+use Flowpack\Neos\FrontendLogin\Domain\Repository\UserRepository;
 
 /**
- * Central authority to deal with users
+ * Central authority to deal with "frontend users"
  *
  * @Flow\Scope("singleton")
  */
-class UserService {
-
+class FrontendUserService {
 
 	/**
 	 * @const string
 	 */
-	const ACCOUNT_AUTHENTICATION_PROVIDER = 'Wwwision.Neos.FrontendLogin:Frontend';
+	const ACCOUNT_AUTHENTICATION_PROVIDER = 'Flowpack.Neos.FrontendLogin:Frontend';
 
 	/**
 	 * @Flow\Inject
@@ -109,7 +108,7 @@ class UserService {
 	 * @param array $roleIdentifiers A list of role identifiers to assign
 	 * @return void
 	 */
-	public function addUser(User $user, $username, $password, array $roleIdentifiers = array('Wwwision.Neos.FrontendLogin:User')) {
+	public function addUser(User $user, $username, $password, array $roleIdentifiers = array('Flowpack.Neos.FrontendLogin:User')) {
 		$account = $this->accountFactory->createAccountWithPassword($username, $password, $roleIdentifiers, self::ACCOUNT_AUTHENTICATION_PROVIDER);
 		$user->addAccount($account);
 
