@@ -14,7 +14,7 @@ TYPO3:
 
     aop:
       globalObjects:
-        'frontendUserService': 'Flowpack\Neos\FrontendLogin\Domain\Service\UserService'
+        'frontendUserService': 'Flowpack\Neos\FrontendLogin\Domain\Service\FrontendUserService'
 
   Neos:
     typoScript:
