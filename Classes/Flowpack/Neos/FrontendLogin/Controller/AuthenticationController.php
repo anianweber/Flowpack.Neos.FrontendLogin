@@ -11,9 +11,9 @@ use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 
 /**
- * Controller for displaying login/logout forms and a profile for authenticated users
+ * Controller for displaying a login/logout form and authenticating/logging out "frontend users"
  */
-class LoginController extends AbstractAuthenticationController {
+class AuthenticationController extends AbstractAuthenticationController {
 
 	/**
 	 * @return void
@@ -36,7 +36,6 @@ class LoginController extends AbstractAuthenticationController {
 	 * @return string
 	 */
 	protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL) {
-		$this->addFlashMessage('Successfully logged in', 'Logged in');
 		$this->redirect('index');
 	}
 

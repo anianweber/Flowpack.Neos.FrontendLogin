@@ -3,6 +3,6 @@
 #
 prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(TYPO3.Neos:Plugin) {
 	package = 'Flowpack.Neos.FrontendLogin'
-	controller = 'Login'
+	controller = 'Authentication'
 	action = 'index'
 }
