@@ -21,10 +21,10 @@ How-To:
 
 Now you should be able to test the frontend login by navigating to ``/login.html``
 
-Hide 
-----------------
+Protected Member Area
+---------------------
 
-If you want to create a "member area" that is only visible to authenticated frontend users, add the following ``Policy.yaml`` to your site package:
+If you want to create a "Member Area" that is only visible to authenticated frontend users, add the following ``Policy.yaml`` to your site package:
 
 ```yaml
 privilegeTargets:
@@ -56,7 +56,8 @@ roles:
 
 The specified node and all its child-nodes will be hidden from anonymous users!
 
-**Note:** Replace "Acme.YourPackage" with the package key of your site package and replace "<NodeIdentifier>" with the node identifier of the "member area" node (as described).
+> **Note:** Replace "Acme.YourPackage" with the package key of your site package and replace "&lt;NodeIdentifier&gt;" with
+> the node identifier of the "member area" node (as described).
 
 Rewriting the template path to your package:
 --------------------------------------------
