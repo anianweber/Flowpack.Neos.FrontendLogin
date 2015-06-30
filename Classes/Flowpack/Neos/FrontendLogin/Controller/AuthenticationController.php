@@ -6,7 +6,6 @@ namespace Flowpack\Neos\FrontendLogin\Controller;
  *                                                                             */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Error\Message;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 
@@ -27,7 +26,6 @@ class AuthenticationController extends AbstractAuthenticationController {
 	 */
 	public function logoutAction() {
 		parent::logoutAction();
-		$this->addFlashMessage('Successfully logged out', 'Logged out', Message::SEVERITY_NOTICE);
 		$this->redirect('index');
 	}
 
