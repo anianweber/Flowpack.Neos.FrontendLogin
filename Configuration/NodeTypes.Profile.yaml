@@ -2,7 +2,8 @@
 # A simple plugin that allows "Frontend users" to edit their profile
 #
 'Flowpack.Neos.FrontendLogin:Profile':
-  superTypes: ['TYPO3.Neos:Plugin']
+  superTypes: 
+    'TYPO3.Neos:Plugin': TRUE
   ui:
     label: 'Frontend user profile'
     icon: 'icon-user'
