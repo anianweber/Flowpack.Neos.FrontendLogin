@@ -12,10 +12,6 @@ TYPO3:
             requestPatterns:
               'Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern': 'frontend'
 
-    aop:
-      globalObjects:
-        'frontendUserService': 'Flowpack\Neos\FrontendLogin\Domain\Service\FrontendUserService'
-
   Neos:
     typoScript:
       autoInclude:

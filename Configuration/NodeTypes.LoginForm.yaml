@@ -2,7 +2,7 @@
 # A simple "Login form" plugin that demonstrates "Frontend authorization"
 #
 'Flowpack.Neos.FrontendLogin:LoginForm':
-  superTypes: 
+  superTypes:
     'TYPO3.Neos:Plugin': TRUE
   ui:
     label: 'Frontend login form'

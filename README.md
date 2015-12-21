@@ -1,32 +1,30 @@
 Flowpack.Neos.FrontendLogin
 ===========================
 
-TYPO3 Neos plugin demonstrating a simple "frontend login"
+Neos plugin demonstrating a simple "frontend login"
 
 DISCLAIMER:
 -----------
 
-This is just a basic *prototype* with various limitation. You should think twice before using it in productive applications.
-The good news is: We're working hard on improving support for Frontend-Logins.
+This package mainly serves for demonstration purpose. You should be fine using it in productive applications, but if you
+need any custom behavior/style it's probably the easiest to create your own login form plugin. It's just a few files.
 
 How-To:
 -------
 
-* Install the package to ``Packages/Plugin/Flowpack.Neos.FrontendLogin`` (e.g. via ``composer require flowpack/neos-frontendlogin:dev-master``)
-* Run database migrations: ``./flow doctrine:migrate``
-* Login to the TYPO3 Neos backend and create a new page "Login" (e.g. at ``/login``)
+* Install the package to ``Packages/Plugin/Flowpack.Neos.FrontendLogin`` (e.g. via ``composer require flowpack/neos-frontendlogin:~2.0``)
+* Login to the Neos backend and create a new page "Login" (e.g. at ``/login``)
 * On that page insert the new plugin ``Frontend login form``
-* Create a page "User Profile" (e.g. at ``/members/profile``)
-* On that page insert the plugin ``Frontend user profile``
+* (Optionally) create a page (and subpages) for a "Members area" (e.g. at ``/members``) and protect it as documented below
 * Publish all changes
-* Create a new Frontend User (you can use the ``frontenduser:create`` command, e.g. ``./flow frontenduser:create user password Your Name``)
+* Create a new Frontend User (you can use the ``typo3.neos:user:create`` command, e.g. ``./flow user:create --authentication-provider "Flowpack.Neos.FrontendLogin:Frontend" --roles "Flowpack.Neos.FrontendLogin:User"``)
 
 Now you should be able to test the frontend login by navigating to ``/login.html``
 
-Hide 
-----------------
+Protected Member Area
+---------------------
 
-If you want to create a "member area" that is only visible to authenticated frontend users, add the following ``Policy.yaml`` to your site package:
+If you want to create a "Member Area" that is only visible to authenticated frontend users, add the following ``Policy.yaml`` to your site package:
 
 ```yaml
 privilegeTargets:
@@ -34,7 +32,8 @@ privilegeTargets:
   'TYPO3\TYPO3CR\Security\Authorization\Privilege\Node\ReadNodePrivilege':
 
     'Acme.YourPackage:MembersArea':
-      matcher: 'isDescendantNodeOf("/sites/yoursite/some/path")'
+        # Replace <NodeIdentifier> with the node's identifier to be targeted (you can see the identifier in the "Additional info" group in the Property Inspector of the Neos Backend)
+      matcher: 'isDescendantNodeOf("<NodeIdentifier>")'
 
 
 roles:
@@ -48,7 +47,6 @@ roles:
 
 
   'TYPO3.Neos:Editor':
-
     privileges:
       -
           # Grant "backend users" to access the "Member area" - Otherwise those pages would be hidden in the backend, too!
@@ -56,7 +54,10 @@ roles:
         permission: GRANT
 ```
 
-**Note:** Replace "Acme.YourPackage" with the package key of your site package and replace "/sites/yoursite/some/path" with the absolute node path of the "member area". The specified node and all its child-nodes will be hidden from anonymous users!
+The specified node and all its child-nodes will be hidden from anonymous users!
+
+> **Note:** Replace "Acme.YourPackage" with the package key of your site package and replace "&lt;NodeIdentifier&gt;" with
+> the node identifier of the "member area" node (as described).
 
 Rewriting the template path to your package:
 --------------------------------------------
@@ -66,15 +67,9 @@ add the following configuration there:
 
 ```yaml
 -
-  requestFilter: 'isPackage("Flowpack.Neos.FrontendLogin") && isController("Login") && isAction("index")'
+  requestFilter: 'isPackage("Flowpack.Neos.FrontendLogin") && isController("Authentication") && isAction("index")'
   options:
-    templatePathAndFilename: 'resource://Acme.YourPackage/Private/Templates/Login/Index.html'
+    templatePathAndFilename: 'resource://Acme.YourPackage/Private/Templates/Authenticate/Index.html'
 ```
 
-Adjust the actual value in ``templatePathAndFilename`` to your needs. The same procedure would go
-to the ``Profile`` action, just add another such configuration with ``isAction("index")``.
-
-Known issues:
--------------
-
-* If you use the ``ReadNodePrivilege`` to protect the "member area" and navigate to a protected page Neos issues a 500 error instead of 404
+Adjust the actual value in ``templatePathAndFilename`` to your needs and copy the [original template](Resources/Private/Templates/Authentication/Index.html) to that location in order to adjust it at will.
