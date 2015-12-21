@@ -1,7 +1,7 @@
 Flowpack.Neos.FrontendLogin
 ===========================
 
-TYPO3 Neos plugin demonstrating a simple "frontend login"
+Neos plugin demonstrating a simple "frontend login"
 
 DISCLAIMER:
 -----------
@@ -13,7 +13,7 @@ How-To:
 -------
 
 * Install the package to ``Packages/Plugin/Flowpack.Neos.FrontendLogin`` (e.g. via ``composer require flowpack/neos-frontendlogin:~2.0``)
-* Login to the TYPO3 Neos backend and create a new page "Login" (e.g. at ``/login``)
+* Login to the Neos backend and create a new page "Login" (e.g. at ``/login``)
 * On that page insert the new plugin ``Frontend login form``
 * (Optionally) create a page (and subpages) for a "Members area" (e.g. at ``/members``) and protect it as documented below
 * Publish all changes
