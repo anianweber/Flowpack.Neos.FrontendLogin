@@ -16,3 +16,8 @@ TYPO3:
     typoScript:
       autoInclude:
         'Flowpack.Neos.FrontendLogin': TRUE
+
+    userInterface:
+      translation:
+        autoInclude:
+          'Flowpack.Neos.FrontendLogin': ['NodeTypes/*']
