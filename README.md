@@ -73,3 +73,10 @@ add the following configuration there:
 ```
 
 Adjust the actual value in ``templatePathAndFilename`` to your needs and copy the [original template](Resources/Private/Templates/Authentication/Index.html) to that location in order to adjust it at will.
+
+Redirect after login/logout:
+----------------------------
+
+Since version 2.1 it's possible to specify pages the user will be redirected to after login and/or logout.
+
+*Hint:* In order to redirect to an external URL you can create a Shortcut node pointing to that URL and specify it as target for the* redirect options.
