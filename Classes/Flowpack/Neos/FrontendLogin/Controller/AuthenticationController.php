@@ -26,7 +26,14 @@ class AuthenticationController extends AbstractAuthenticationController {
 	 */
 	public function logoutAction() {
 		parent::logoutAction();
-		$this->redirect('index');
+
+		$uri = $this->request->getInternalArgument('__redirectAfterLogoutUri');
+
+		if (empty($uri)) {
+			$this->redirect('index');
+		} else {
+			$this->redirectToUri($uri);
+		}
 	}
 
 	/**
@@ -34,7 +41,13 @@ class AuthenticationController extends AbstractAuthenticationController {
 	 * @return string
 	 */
 	protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL) {
-		$this->redirect('index');
+		$uri = $this->request->getInternalArgument('__redirectAfterLoginUri');
+
+		if (empty($uri)) {
+			$this->redirect('index');
+		} else {
+			$this->redirectToUri($uri);
+		}
 	}
 
 	/**
