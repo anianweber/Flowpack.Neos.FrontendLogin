@@ -6,11 +6,15 @@ TYPO3:
         providers:
           'Typo3BackendProvider':
             requestPatterns:
-              'Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern': 'backend'
+              'Flowpack.Neos.FrontendLogin:NeosBackend':
+                pattern: 'Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern'
           'Flowpack.Neos.FrontendLogin:Frontend':
             provider: 'PersistedUsernamePasswordProvider'
             requestPatterns:
-              'Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern': 'frontend'
+              'Flowpack.Neos.FrontendLogin:NeosFrontend':
+                pattern: 'Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern'
+                patternOptions:
+                  matchFrontend: TRUE
 
   Neos:
     typoScript:
