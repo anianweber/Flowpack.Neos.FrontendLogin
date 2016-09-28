@@ -14,31 +14,18 @@ use TYPO3\Flow\Security\RequestPatternInterface;
  */
 class NeosRequestPattern implements RequestPatternInterface {
 
-	const PATTERN_BACKEND = 'backend';
-	const PATTERN_FRONTEND = 'frontend';
-
 	/**
-	 * @var boolean
+	 * @var array
 	 */
-	protected $shouldMatchBackend = TRUE;
+	protected $options;
 
 	/**
-	 * Returns the set pattern
+	 * Expects options in the form array('matchFrontend' => TRUE/FALSE)
 	 *
-	 * @return string The set pattern
+	 * @param array $options
 	 */
-	public function getPattern() {
-		return $this->shouldMatchBackend ? self::PATTERN_BACKEND : self::PATTERN_FRONTEND;
-	}
-
-	/**
-	 * Sets the pattern (match) configuration
-	 *
-	 * @param object $pattern The pattern (match) configuration
-	 * @return void
-	 */
-	public function setPattern($pattern) {
-		$this->shouldMatchBackend = ($pattern === self::PATTERN_FRONTEND) ? FALSE : TRUE;
+	public function __construct(array $options) {
+		$this->options = $options;
 	}
 
 	/**
@@ -51,9 +38,10 @@ class NeosRequestPattern implements RequestPatternInterface {
 		if (!$request instanceof ActionRequest) {
 			return FALSE;
 		}
+		$shouldMatchFrontend = isset($this->options['matchFrontend']) && $this->options['matchFrontend'] === true;
 		$requestPath = $request->getHttpRequest()->getUri()->getPath();
 		$requestPathMatchesBackend = substr($requestPath, 0, 5) === '/neos' || strpos($requestPath, '@') !== FALSE;
-		return $this->shouldMatchBackend === $requestPathMatchesBackend;
+		return $shouldMatchFrontend !== $requestPathMatchesBackend;
 	}
 
 }
