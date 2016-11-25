@@ -5,9 +5,9 @@ namespace Flowpack\Neos\FrontendLogin\Security;
  * This script belongs to the TYPO3 Flow package "Flowpack.Neos.FrontendLogin".*
  *                                                                             */
 
-use TYPO3\Flow\Mvc\ActionRequest;
-use TYPO3\Flow\Mvc\RequestInterface;
-use TYPO3\Flow\Security\RequestPatternInterface;
+use Neos\Flow\Mvc\ActionRequest;
+use Neos\Flow\Mvc\RequestInterface;
+use Neos\Flow\Security\RequestPatternInterface;
 
 /**
  * A request pattern that can detect and match "frontend" and "backend" mode
@@ -29,7 +29,7 @@ class NeosRequestPattern implements RequestPatternInterface {
 	}
 
 	/**
-	 * Matches a \TYPO3\Flow\Mvc\RequestInterface against its set pattern rules
+	 * Matches a \Neos\Flow\Mvc\RequestInterface against its set pattern rules
 	 *
 	 * @param RequestInterface $request The request that should be matched
 	 * @return boolean TRUE if the pattern matched, FALSE otherwise

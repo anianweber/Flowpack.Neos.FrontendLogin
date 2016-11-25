@@ -1,13 +1,13 @@
 privilegeTargets:
 
-  'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+  'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
 
     'Flowpack.Neos.FrontendLogin:LoginForm':
-      matcher: 'method(TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController->(?!initialize).*Action()) || method(Flowpack\Neos\FrontendLogin\Controller\AuthenticationController->(?!initialize).*Action())'
+      matcher: 'method(Neos\Flow\Security\Authentication\Controller\AbstractAuthenticationController->(?!initialize).*Action()) || method(Flowpack\Neos\FrontendLogin\Controller\AuthenticationController->(?!initialize).*Action())'
 
 roles:
 
-  'TYPO3.Flow:Everybody':
+  'Neos.Flow:Everybody':
     privileges:
       -
           # Grant any user access to the FrontendLoginLoginForm plugin

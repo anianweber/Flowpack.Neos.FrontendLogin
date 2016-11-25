@@ -5,9 +5,9 @@ namespace Flowpack\Neos\FrontendLogin\Controller;
  * This script belongs to the TYPO3 Flow package "Flowpack.Neos.FrontendLogin".*
  *                                                                             */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Mvc\ActionRequest;
-use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Mvc\ActionRequest;
+use Neos\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 
 /**
  * Controller for displaying a login/logout form and authenticating/logging out "frontend users"
