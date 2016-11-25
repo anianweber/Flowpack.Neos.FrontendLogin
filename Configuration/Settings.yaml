@@ -1,14 +1,4 @@
 
-TYPO3:
-  Neos:
-    typoScript:
-      autoInclude:
-        Flowpack.Neos.FrontendLogin: true
-    userInterface:
-      translation:
-        autoInclude:
-          Flowpack.Neos.FrontendLogin:
-            - 'NodeTypes/*'
 Neos:
   Flow:
     security:
@@ -25,3 +15,12 @@ Neos:
                 pattern: Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern
                 patternOptions:
                   matchFrontend: true
+  Neos:
+    typoScript:
+      autoInclude:
+        Flowpack.Neos.FrontendLogin: true
+    userInterface:
+      translation:
+        autoInclude:
+          Flowpack.Neos.FrontendLogin:
+            - 'NodeTypes/*'
