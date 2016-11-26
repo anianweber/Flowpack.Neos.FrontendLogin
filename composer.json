@@ -1,10 +1,10 @@
 {
     "name": "flowpack/neos-frontendlogin",
-    "type": "typo3-flow-plugin",
+    "type": "neos-plugin",
     "description": "Neos plugin demonstrating a simple frontend login",
     "license": "MIT",
     "require": {
-        "typo3/neos": "*"
+        "neos/neos": "*"
     },
     "autoload": {
         "psr-0": {
