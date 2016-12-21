@@ -16,11 +16,11 @@ Neos:
                 patternOptions:
                   matchFrontend: true
   Neos:
-    typoScript:
-      autoInclude:
-        Flowpack.Neos.FrontendLogin: true
     userInterface:
       translation:
         autoInclude:
           Flowpack.Neos.FrontendLogin:
             - 'NodeTypes/*'
+    fusion:
+      autoInclude:
+        Flowpack.Neos.FrontendLogin: true
