@@ -16,7 +16,7 @@ Neos:
                 patternOptions:
                   matchFrontend: true
   Neos:
-    typoScript:
+    fusion:
       autoInclude:
         Flowpack.Neos.FrontendLogin: true
     userInterface:
