@@ -16,6 +16,10 @@ Neos:
                 patternOptions:
                   matchFrontend: true
   Neos:
+    fusion:
+      autoInclude:
+        Flowpack.Neos.FrontendLogin: true
+
     userInterface:
       translation:
         autoInclude:
