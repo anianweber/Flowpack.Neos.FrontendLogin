@@ -4,7 +4,7 @@ Neos:
     security:
       authentication:
         providers:
-          Typo3BackendProvider:
+          'Neos.Neos:Backend':
             requestPatterns:
               'Flowpack.Neos.FrontendLogin:NeosBackend':
                 pattern: Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern
@@ -16,11 +16,11 @@ Neos:
                 patternOptions:
                   matchFrontend: true
   Neos:
-    typoScript:
-      autoInclude:
-        Flowpack.Neos.FrontendLogin: true
     userInterface:
       translation:
         autoInclude:
           Flowpack.Neos.FrontendLogin:
             - 'NodeTypes/*'
+    fusion:
+      autoInclude:
+        Flowpack.Neos.FrontendLogin: true
