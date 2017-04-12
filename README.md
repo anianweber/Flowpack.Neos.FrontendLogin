@@ -12,12 +12,12 @@ need any custom behavior/style it's probably the easiest to create your own logi
 How-To:
 -------
 
-* Install the package to ``Packages/Plugin/Flowpack.Neos.FrontendLogin`` (e.g. via ``composer require flowpack/neos-frontendlogin:~2.0``)
+* Install the package to ``Packages/Plugin/Flowpack.Neos.FrontendLogin`` (e.g. via ``composer require flowpack/neos-frontendlogin:~3.0``)
 * Login to the Neos backend and create a new page "Login" (e.g. at ``/login``)
 * On that page insert the new plugin ``Frontend login form``
 * (Optionally) create a page (and subpages) for a "Members area" (e.g. at ``/members``) and protect it as documented below
 * Publish all changes
-* Create a new Frontend User (you can use the ``typo3.neos:user:create`` command, e.g. ``./flow user:create --authentication-provider "Flowpack.Neos.FrontendLogin:Frontend" --roles "Flowpack.Neos.FrontendLogin:User"``)
+* Create a new Frontend User (you can use the ``neos.neos:user:create`` command, e.g. ``./flow user:create --authentication-provider "Flowpack.Neos.FrontendLogin:Frontend" --roles "Flowpack.Neos.FrontendLogin:User"``)
 
 Now you should be able to test the frontend login by navigating to ``/login.html``
 
@@ -29,7 +29,7 @@ If you want to create a "Member Area" that is only visible to authenticated fron
 ```yaml
 privilegeTargets:
 
-  'TYPO3\TYPO3CR\Security\Authorization\Privilege\Node\ReadNodePrivilege':
+  'Neos\ContentRepository\Security\Authorization\Privilege\Node\ReadNodePrivilege':
 
     'Acme.YourPackage:MembersArea':
         # Replace <NodeIdentifier> with the node's identifier to be targeted (you can see the identifier in the "Additional info" group in the Property Inspector of the Neos Backend)
