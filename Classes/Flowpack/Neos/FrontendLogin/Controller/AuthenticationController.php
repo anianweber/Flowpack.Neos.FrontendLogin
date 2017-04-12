@@ -1,10 +1,6 @@
 <?php
 namespace Flowpack\Neos\FrontendLogin\Controller;
 
-/*                                                                             *
- * This script belongs to the TYPO3 Flow package "Flowpack.Neos.FrontendLogin".*
- *                                                                             */
-
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Security\Authentication\Controller\AbstractAuthenticationController;

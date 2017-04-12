@@ -46,7 +46,7 @@ roles:
         permission: GRANT
 
 
-  'TYPO3.Neos:Editor':
+  'Neos.Neos:Editor':
     privileges:
       -
           # Grant "backend users" to access the "Member area" - Otherwise those pages would be hidden in the backend, too!

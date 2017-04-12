@@ -1,10 +1,6 @@
 <?php
 namespace Flowpack\Neos\FrontendLogin\Security;
 
-/*                                                                             *
- * This script belongs to the TYPO3 Flow package "Flowpack.Neos.FrontendLogin".*
- *                                                                             */
-
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\RequestInterface;
 use Neos\Flow\Security\RequestPatternInterface;
