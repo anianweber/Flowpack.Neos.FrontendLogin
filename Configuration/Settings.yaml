@@ -21,3 +21,10 @@ TYPO3:
       translation:
         autoInclude:
           'Flowpack.Neos.FrontendLogin': ['NodeTypes/*']
+
+Flowpack:
+  Neos:
+    FrontendLogin:
+      translation:
+        packageKey: 'Flowpack.Neos.FrontendLogin'
+        sourceName: 'Main'

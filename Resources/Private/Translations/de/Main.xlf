@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+	<file original="" product-name="Flowpack.Neos.FrontendLogin" source-language="en" target-language="de" datatype="plaintext">
+		<body>
+			<trans-unit id="authentication.failure.title" xml:space="preserve">
+				<source>Login failed!</source>
+				<target state="translated">Anmeldung fehlgeschlagen!</target>
+			</trans-unit>
+            <trans-unit id="authentication.failure.message" xml:space="preserve">
+				<source>With the given credentials the login could not be performed successfully.</source>
+				<target state="translated">Die Anmeldung konnte mit den gegebenen Zugangsdaten nicht erfolgreich durchgeführt werden.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -6,13 +6,33 @@ namespace Flowpack\Neos\FrontendLogin\Controller;
  *                                                                             */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Error\Error;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
+use TYPO3\Flow\Security\Exception\AuthenticationRequiredException;
 
 /**
  * Controller for displaying a login/logout form and authenticating/logging out "frontend users"
  */
 class AuthenticationController extends AbstractAuthenticationController {
+
+	/**
+	 * @var \TYPO3\Flow\I18n\Translator
+	 * @Flow\Inject
+	 */
+	protected $translator;
+
+	/**
+	 * @Flow\InjectConfiguration(package="Flowpack.Neos.FrontendLogin", path="translation.packageKey")
+	 * @var string
+	 */
+	protected $translationPackageKey;
+
+	/**
+	 * @Flow\InjectConfiguration(package="Flowpack.Neos.FrontendLogin", path="translation.sourceName")
+	 * @var string
+	 */
+	protected $translationSourceName;
 
 	/**
 	 * @return void
@@ -48,6 +68,20 @@ class AuthenticationController extends AbstractAuthenticationController {
 		} else {
 			$this->redirectToUri($uri);
 		}
+	}
+
+	protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null) {
+		$title = $this->getTranslationById('authentication.failure.title');
+		$message = $this->getTranslationById('authentication.failure.message');
+		$this->flashMessageContainer->addMessage(new Error($message, ($exception === null ? 1496914553 : $exception->getCode()), array(), $title));
+	}
+
+	/**
+	 * @param string $labelId Key to use for finding translation
+	 * @return string Translated message or NULL on failure
+	 */
+	protected function getTranslationById($labelId) {
+		return $this->translator->translateById($labelId, array(), null, null, $this->translationSourceName, $this->translationPackageKey);
 	}
 
 	/**
