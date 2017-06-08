@@ -70,6 +70,13 @@ class AuthenticationController extends AbstractAuthenticationController {
 		}
 	}
 
+
+	/**
+	 * Create translated FlashMessage and add it to flashMessageContainer
+	 *
+	 * @param ActionRequest $originalRequest The request that was intercepted by the security framework, NULL if there was none
+	 * @return string
+	 */
 	protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null) {
 		$title = $this->getTranslationById('authentication.failure.title');
 		$message = $this->getTranslationById('authentication.failure.message');
@@ -77,6 +84,8 @@ class AuthenticationController extends AbstractAuthenticationController {
 	}
 
 	/**
+	 * Get translation by label id for configured source name and package key
+	 *
 	 * @param string $labelId Key to use for finding translation
 	 * @return string Translated message or NULL on failure
 	 */
