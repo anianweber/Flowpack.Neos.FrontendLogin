@@ -13,3 +13,5 @@ roles:
           # Grant any user access to the FrontendLoginLoginForm plugin
         privilegeTarget: 'Flowpack.Neos.FrontendLogin:LoginForm'
         permission: GRANT
+
+  'Flowpack.Neos.FrontendLogin:User':
