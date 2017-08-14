@@ -6,7 +6,7 @@ namespace Flowpack\Neos\FrontendLogin\Controller;
  *                                                                             */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Error\Error;
+use TYPO3\Flow\Error\Message;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 use TYPO3\Flow\Security\Exception\AuthenticationRequiredException;
@@ -58,7 +58,7 @@ class AuthenticationController extends AbstractAuthenticationController {
 
 	/**
 	 * @param ActionRequest $originalRequest The request that was intercepted by the security framework, NULL if there was none
-	 * @return string
+	 * @return void
 	 */
 	protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL) {
 		$uri = $this->request->getInternalArgument('__redirectAfterLoginUri');
@@ -74,13 +74,13 @@ class AuthenticationController extends AbstractAuthenticationController {
 	/**
 	 * Create translated FlashMessage and add it to flashMessageContainer
 	 *
-	 * @param ActionRequest $originalRequest The request that was intercepted by the security framework, NULL if there was none
-	 * @return string
+	 * @param AuthenticationRequiredException $exception
+	 * @return void
 	 */
 	protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null) {
 		$title = $this->getTranslationById('authentication.failure.title');
 		$message = $this->getTranslationById('authentication.failure.message');
-		$this->flashMessageContainer->addMessage(new Error($message, ($exception === null ? 1496914553 : $exception->getCode()), array(), $title));
+		$this->addFlashMessage($message, $title, Message::SEVERITY_ERROR, [], $exception === null ? 1496914553 : $exception->getCode());
 	}
 
 	/**
@@ -90,7 +90,7 @@ class AuthenticationController extends AbstractAuthenticationController {
 	 * @return string Translated message or NULL on failure
 	 */
 	protected function getTranslationById($labelId) {
-		return $this->translator->translateById($labelId, array(), null, null, $this->translationSourceName, $this->translationPackageKey);
+		return $this->translator->translateById($labelId, [], null, null, $this->translationSourceName, $this->translationPackageKey);
 	}
 
 	/**
