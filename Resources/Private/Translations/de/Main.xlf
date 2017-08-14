@@ -8,7 +8,7 @@
 			</trans-unit>
             <trans-unit id="authentication.failure.message" xml:space="preserve">
 				<source>With the given credentials the login could not be performed successfully.</source>
-				<target state="translated">Die Anmeldung konnte mit den gegebenen Zugangsdaten nicht erfolgreich durchgeführt werden.</target>
+				<target state="translated">Die Anmeldung konnte mit den eingegebenen Zugangsdaten nicht erfolgreich durchgeführt werden.</target>
 			</trans-unit>
 		</body>
 	</file>
