@@ -15,3 +15,4 @@ roles:
         permission: GRANT
 
   'Flowpack.Neos.FrontendLogin:User':
+    privileges: []
