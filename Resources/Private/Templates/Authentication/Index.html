@@ -16,6 +16,8 @@
 							</f:form>
 						</f:then>
 						<f:else>
+							<f:flashMessages severity="Error" />
+
 							<f:form action="authenticate" method="post" class="form-horizontal clearfix" additionalAttributes="{role:'form'}">
 								<div class="form-group">
 									<label for="flowpack-neos-frontendlogin-username" class="col-lg-4 control-label">Username:</label>

@@ -1,4 +1,3 @@
-
 Neos:
   Flow:
     security:
@@ -24,3 +23,10 @@ Neos:
     fusion:
       autoInclude:
         Flowpack.Neos.FrontendLogin: true
+
+Flowpack:
+  Neos:
+    FrontendLogin:
+      translation:
+        packageKey: 'Flowpack.Neos.FrontendLogin'
+        sourceName: 'Main'
