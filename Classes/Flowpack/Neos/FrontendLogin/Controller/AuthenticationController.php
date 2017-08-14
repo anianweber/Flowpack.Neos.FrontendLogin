@@ -6,13 +6,33 @@ namespace Flowpack\Neos\FrontendLogin\Controller;
  *                                                                             */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Error\Message;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
+use TYPO3\Flow\Security\Exception\AuthenticationRequiredException;
 
 /**
  * Controller for displaying a login/logout form and authenticating/logging out "frontend users"
  */
 class AuthenticationController extends AbstractAuthenticationController {
+
+	/**
+	 * @var \TYPO3\Flow\I18n\Translator
+	 * @Flow\Inject
+	 */
+	protected $translator;
+
+	/**
+	 * @Flow\InjectConfiguration(package="Flowpack.Neos.FrontendLogin", path="translation.packageKey")
+	 * @var string
+	 */
+	protected $translationPackageKey;
+
+	/**
+	 * @Flow\InjectConfiguration(package="Flowpack.Neos.FrontendLogin", path="translation.sourceName")
+	 * @var string
+	 */
+	protected $translationSourceName;
 
 	/**
 	 * @return void
@@ -38,7 +58,7 @@ class AuthenticationController extends AbstractAuthenticationController {
 
 	/**
 	 * @param ActionRequest $originalRequest The request that was intercepted by the security framework, NULL if there was none
-	 * @return string
+	 * @return void
 	 */
 	protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL) {
 		$uri = $this->request->getInternalArgument('__redirectAfterLoginUri');
@@ -48,6 +68,29 @@ class AuthenticationController extends AbstractAuthenticationController {
 		} else {
 			$this->redirectToUri($uri);
 		}
+	}
+
+
+	/**
+	 * Create translated FlashMessage and add it to flashMessageContainer
+	 *
+	 * @param AuthenticationRequiredException $exception
+	 * @return void
+	 */
+	protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null) {
+		$title = $this->getTranslationById('authentication.failure.title');
+		$message = $this->getTranslationById('authentication.failure.message');
+		$this->addFlashMessage($message, $title, Message::SEVERITY_ERROR, [], $exception === null ? 1496914553 : $exception->getCode());
+	}
+
+	/**
+	 * Get translation by label id for configured source name and package key
+	 *
+	 * @param string $labelId Key to use for finding translation
+	 * @return string Translated message or NULL on failure
+	 */
+	protected function getTranslationById($labelId) {
+		return $this->translator->translateById($labelId, [], null, null, $this->translationSourceName, $this->translationPackageKey);
 	}
 
 	/**
