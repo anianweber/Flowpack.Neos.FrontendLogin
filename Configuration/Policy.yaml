@@ -10,7 +10,7 @@ roles:
   'Neos.Flow:Everybody':
     privileges:
       -
-          # Grant any user access to the FrontendLoginLoginForm plugin
+        # Grant any user access to the FrontendLoginLoginForm plugin
         privilegeTarget: 'Flowpack.Neos.FrontendLogin:LoginForm'
         permission: GRANT
 
