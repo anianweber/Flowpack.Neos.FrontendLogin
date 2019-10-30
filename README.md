@@ -17,7 +17,8 @@ Setup & Use
 * On that page insert the new plugin ``Frontend login form``
 * (Optionally) create a page (and subpages) for a "Members area" (e.g. at ``/members``) and protect it as documented below
 * Publish all changes
-* Create a new Frontend User (you can use the ``neos.neos:user:create`` command, e.g. ``./flow user:create --authentication-provider
+* Create a new Frontend User using the UI (in "Management > Frontend Users")
+* Alternatively you can use the ``neos.neos:user:create`` command (e.g. ``./flow user:create --authentication-provider
   "Flowpack.Neos.FrontendLogin:Frontend" --roles "Flowpack.Neos.FrontendLogin:User"``)
 
 Now you should be able to test the frontend login by navigating to ``/login.html``
@@ -85,3 +86,10 @@ form properties.
 
 *Hint:* In order to redirect to an external URL you can create a Shortcut node pointing to that URL and specify it as target
 for the redirect options.
+
+User management UI
+------------------
+
+The user management UI is available to administrators and everyone else having the role `Flowpack.Neos.FrontendLogin.Ui:UserAdministrator`.
+
+It allows to manage users with the `Flowpack.Neos.FrontendLogin:Frontend` authentication provider exclusively.
