@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Flowpack\Neos\FrontendLogin\Controller;
 
@@ -12,12 +13,13 @@ namespace Flowpack\Neos\FrontendLogin\Controller;
  * source code.
  */
 
+use Neos\Error\Messages as Error;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
+use Neos\Flow\Mvc\Exception\UnsupportedRequestTypeException;
 use Neos\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 use Neos\Flow\Security\Exception\AuthenticationRequiredException;
-use Neos\Error\Messages as Error;
 
 /**
  * Controller for displaying a login/logout form and authenticating/logging out "frontend users"
@@ -45,7 +47,7 @@ class AuthenticationController extends AbstractAuthenticationController
     /**
      * @return void
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->view->assign('account', $this->securityContext->getAccount());
     }
@@ -69,6 +71,7 @@ class AuthenticationController extends AbstractAuthenticationController
     /**
      * @param ActionRequest $originalRequest The request that was intercepted by the security framework, NULL if there was none
      * @return void
+     * @throws UnsupportedRequestTypeException
      */
     protected function onAuthenticationSuccess(ActionRequest $originalRequest = null)
     {
@@ -100,7 +103,7 @@ class AuthenticationController extends AbstractAuthenticationController
      * @param string $labelId Key to use for finding translation
      * @return string Translated message or NULL on failure
      */
-    protected function getTranslationById($labelId)
+    protected function getTranslationById($labelId): string
     {
         return $this->translator->translateById($labelId, [], null, null, $this->translationSourceName, $this->translationPackageKey);
     }
