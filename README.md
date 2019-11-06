@@ -3,21 +3,22 @@ Flowpack.Neos.FrontendLogin
 
 Neos plugin demonstrating a simple "frontend login"
 
-DISCLAIMER:
------------
+DISCLAIMER
+----------
 
 This package mainly serves for demonstration purpose. You should be fine using it in productive applications, but if you
 need any custom behavior/style it's probably the easiest to create your own login form plugin. It's just a few files.
 
-How-To:
--------
+Setup & Use
+-----------
 
-* Install the package to ``Packages/Plugin/Flowpack.Neos.FrontendLogin`` (e.g. via ``composer require flowpack/neos-frontendlogin:~3.0``)
+* Install the package to ``Packages/Plugin/Flowpack.Neos.FrontendLogin`` (e.g. via ``composer require flowpack/neos-frontendlogin``)
 * Login to the Neos backend and create a new page "Login" (e.g. at ``/login``)
 * On that page insert the new plugin ``Frontend login form``
 * (Optionally) create a page (and subpages) for a "Members area" (e.g. at ``/members``) and protect it as documented below
 * Publish all changes
-* Create a new Frontend User (you can use the ``neos.neos:user:create`` command, e.g. ``./flow user:create --authentication-provider "Flowpack.Neos.FrontendLogin:Frontend" --roles "Flowpack.Neos.FrontendLogin:User"``)
+* Create a new Frontend User (you can use the ``neos.neos:user:create`` command, e.g. ``./flow user:create --authentication-provider
+  "Flowpack.Neos.FrontendLogin:Frontend" --roles "Flowpack.Neos.FrontendLogin:User"``)
 
 Now you should be able to test the frontend login by navigating to ``/login.html``
 
@@ -32,7 +33,8 @@ privilegeTargets:
   'Neos\ContentRepository\Security\Authorization\Privilege\Node\ReadNodePrivilege':
 
     'Acme.YourPackage:MembersArea':
-        # Replace <NodeIdentifier> with the node's identifier to be targeted (you can see the identifier in the "Additional info" group in the Property Inspector of the Neos Backend)
+        # Replace <NodeIdentifier> with the node's identifier to be targeted (you can see the identifier in the "Additional info"
+        # group in the Property Inspector of the Neos Backend)
       matcher: 'isDescendantNodeOf("<NodeIdentifier>")'
 
 
@@ -72,11 +74,14 @@ add the following configuration there:
     templatePathAndFilename: 'resource://Acme.YourPackage/Private/Templates/Authenticate/Index.html'
 ```
 
-Adjust the actual value in ``templatePathAndFilename`` to your needs and copy the [original template](Resources/Private/Templates/Authentication/Index.html) to that location in order to adjust it at will.
+Adjust the actual value in ``templatePathAndFilename`` to your needs and copy the [original template](Resources/Private/Templates/Authentication/Index.html)
+to that location in order to adjust it at will.
 
 Redirect after login/logout:
 ----------------------------
 
-Since version 2.1 it's possible to specify pages the user will be redirected to after login and/or logout.
+It is possible to specify pages the user will be redirected to after login and/or logout (since version 2.1.) in the login
+form properties.
 
-*Hint:* In order to redirect to an external URL you can create a Shortcut node pointing to that URL and specify it as target for the* redirect options.
+*Hint:* In order to redirect to an external URL you can create a Shortcut node pointing to that URL and specify it as target
+for the redirect options.

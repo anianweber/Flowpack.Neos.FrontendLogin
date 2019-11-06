@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Flowpack\Neos\FrontendLogin\Security;
 
@@ -50,7 +51,7 @@ class NeosRequestPattern implements RequestPatternInterface
         }
         $shouldMatchFrontend = isset($this->options['matchFrontend']) && $this->options['matchFrontend'] === true;
         $requestPath = $request->getHttpRequest()->getUri()->getPath();
-        $requestPathMatchesBackend = substr($requestPath, 0, 5) === '/neos' || strpos($requestPath, '@') !== false;
+        $requestPathMatchesBackend = strpos($requestPath, '/neos') === 0 || strpos($requestPath, '@') !== false;
         return $shouldMatchFrontend !== $requestPathMatchesBackend;
     }
 
