@@ -19,6 +19,8 @@ Neos:
       translation:
         autoInclude:
           Flowpack.Neos.FrontendLogin:
+            - Main
+            - Modules
             - 'NodeTypes/*'
     fusion:
       autoInclude:
