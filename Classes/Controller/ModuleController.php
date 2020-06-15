@@ -19,6 +19,9 @@ use Neos\Flow\Mvc\Exception\UnsupportedRequestTypeException;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Security\Account;
 use Neos\Flow\Security\AccountRepository;
+use Neos\Flow\Security\Exception\NoSuchRoleException;
+use Neos\Flow\Security\Policy\PolicyService;
+use Neos\Flow\Security\Policy\Role;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Neos\Domain\Exception as NeosDomainException;
 use Neos\Neos\Domain\Model\User;
@@ -34,6 +37,12 @@ class ModuleController extends AbstractModuleController
      * @var UserService
      */
     protected $userService;
+
+    /**
+     * @Flow\Inject
+     * @var PolicyService
+     */
+    protected $policyService;
 
     /**
      * @Flow\Inject
@@ -96,14 +105,13 @@ class ModuleController extends AbstractModuleController
     /**
      * Renders a form for creating a new user
      *
-     * @param User $user
      * @return void
      */
-    public function newAction(User $user = null): void
+    public function newAction(): void
     {
         $this->view->assignMultiple([
             'currentUser' => $this->currentUser,
-            'user' => $user
+            'availableRoles' => $this->getFrontendUserRoles()
         ]);
     }
 
@@ -114,14 +122,17 @@ class ModuleController extends AbstractModuleController
      * @param array $password Expects an array in the format array('<password>', '<password confirmation>')
      * @param User $user The user to create
      * @param \DateTime $expirationDate
+     * @param array $roleIdentifiers Identifiers of roles to assign to account
      * @return void
      * @Flow\Validate(argumentName="username", type="\Neos\Flow\Validation\Validator\NotEmptyValidator")
      * @Flow\Validate(argumentName="username", type="\Neos\Neos\Validation\Validator\UserDoesNotExistValidator")
      * @Flow\Validate(argumentName="password", type="\Neos\Neos\Validation\Validator\PasswordValidator", options={ "allowEmpty"=0, "minimum"=1, "maximum"=255 })
      */
-    public function createAction($username, array $password, User $user, ?\DateTime $expirationDate): void
+    public function createAction($username, array $password, User $user, ?\DateTime $expirationDate, array $roleIdentifiers = []): void
     {
-        $user = $this->userService->addUser($username, $password[0], $user, [self::$roleIdentifier], self::$authenticationProviderName);
+        // make sure self::$roleIdentifier is always added
+        $roleIdentifiers = array_unique(array_merge($roleIdentifiers, [self::$roleIdentifier]));
+        $user = $this->userService->addUser($username, $password[0], $user, $roleIdentifiers, self::$authenticationProviderName);
 
         if ($expirationDate !== null) {
             /** @var Account $account */
@@ -202,6 +213,7 @@ class ModuleController extends AbstractModuleController
      * @return void
      * @throws NeosDomainException
      * @throws UnsupportedRequestTypeException
+     * @throws NoSuchRoleException
      */
     public function editAccountAction(Account $account): void
     {
@@ -209,7 +221,8 @@ class ModuleController extends AbstractModuleController
             $this->view->assignMultiple([
                 'account' => $account,
                 'user' => $this->userService->getUser($account->getAccountIdentifier(), $account->getAuthenticationProviderName()),
-                'expirationDate' => $account->getExpirationDate()
+                'expirationDate' => $account->getExpirationDate(),
+                'availableRoles' => $this->getFrontendUserRoles()
             ]);
         } else {
             $this->throwStatus(403, 'Not allowed to edit that account');
@@ -220,6 +233,7 @@ class ModuleController extends AbstractModuleController
      * Update a given account
      *
      * @param Account $account The account to update
+     * @param array $roleIdentifiers Identifiers of roles to assign to account
      * @param array $password Expects an array in the format array('<password>', '<password confirmation>')
      * @Flow\Validate(argumentName="password", type="\Neos\Neos\Validation\Validator\PasswordValidator", options={ "allowEmpty"=1, "minimum"=1, "maximum"=255 })
      * @return void
@@ -227,9 +241,12 @@ class ModuleController extends AbstractModuleController
      * @throws IllegalObjectTypeException
      * @throws UnsupportedRequestTypeException
      */
-    public function updateAccountAction(Account $account, array $password = []): void
+    public function updateAccountAction(Account $account, array $roleIdentifiers = [], array $password = []): void
     {
         if ($this->checkAccount($account)) {
+            // make sure self::$roleIdentifier is always added
+            $roleIdentifiers = array_unique(array_merge($roleIdentifiers, [self::$roleIdentifier]));
+            $this->userService->setRolesForAccount($account, $roleIdentifiers);
             $user = $this->userService->getUser($account->getAccountIdentifier(), $account->getAuthenticationProviderName());
             $password = array_shift($password);
             if (trim((string)$password) !== '') {
@@ -292,5 +309,20 @@ class ModuleController extends AbstractModuleController
         }
 
         return false;
+    }
+
+    /**
+     * Returns all roles that are (indirect) heirs of self::$roleIdentifier
+     *
+     * @return Role[]
+     * @throws NoSuchRoleException
+     */
+    protected function getFrontendUserRoles(): array
+    {
+        $availableRoles = $this->policyService->getRoles();
+        $frontendUserRole = $this->policyService->getRole(self::$roleIdentifier);
+        return array_filter($availableRoles, static function (Role $role) use ($frontendUserRole) {
+            return $role->getIdentifier() === self::$roleIdentifier || array_key_exists($frontendUserRole->getIdentifier(), $role->getAllParentRoles());
+        });
     }
 }
