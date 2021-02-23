@@ -130,17 +130,21 @@ class ModuleController extends AbstractModuleController
     public function createAction(string $username, array $password, User $user, ?\DateTime $expirationDate, array $roleIdentifiers = []): void
     {
         // make sure self::$roleIdentifier is always added
-        $roleIdentifiers = array_unique(array_merge($roleIdentifiers, [self::$roleIdentifier]));
-        $user = $this->userService->addUser($username, $password[0], $user, $roleIdentifiers, self::$authenticationProviderName);
+        $roleIdentifiersToSet = array_unique(array_merge($roleIdentifiers, [self::$roleIdentifier]));
+        if ($this->onlyFrontendRoles($roleIdentifiersToSet)) {
+            $user = $this->userService->addUser($username, $password[0], $user, $roleIdentifiersToSet, self::$authenticationProviderName);
 
-        if ($expirationDate !== null) {
-            /** @var Account $account */
-            $account = $user->getAccounts()->first();
-            $expirationDate->setTime(0, 0, 0);
-            $account->setExpirationDate($expirationDate);
+            if ($expirationDate !== null) {
+                /** @var Account $account */
+                $account = $user->getAccounts()->first();
+                $expirationDate->setTime(0, 0);
+                $account->setExpirationDate($expirationDate);
+            }
+
+            $this->addFlashMessage('The user "%s" has been created.', 'User created', Message::SEVERITY_OK, [htmlspecialchars($username)], 1416225561);
+        } else {
+            $this->throwStatus(403, 'Not allowed to assign the given roles');
         }
-
-        $this->addFlashMessage('The user "%s" has been created.', 'User created', Message::SEVERITY_OK, [htmlspecialchars($username)], 1416225561);
         $this->redirect('index');
     }
 
@@ -243,17 +247,25 @@ class ModuleController extends AbstractModuleController
     {
         if ($this->checkAccount($account)) {
             // make sure self::$roleIdentifier is always added
-            $roleIdentifiers = array_unique(array_merge($roleIdentifiers, [self::$roleIdentifier]));
-            $this->userService->setRolesForAccount($account, $roleIdentifiers);
-            $user = $this->userService->getUser($account->getAccountIdentifier(), $account->getAuthenticationProviderName());
-            $password = array_shift($password);
-            if (trim((string)$password) !== '') {
-                $this->userService->setUserPassword($user, $password);
-            }
-            $this->accountRepository->update($account);
+            $roleIdentifiersToSet = array_unique(array_merge($roleIdentifiers, [self::$roleIdentifier]));
 
-            $this->addFlashMessage('The account has been updated.', 'Account updated', Message::SEVERITY_OK);
-            $this->redirect('edit', null, null, ['user' => $user]);
+            if ($this->onlyFrontendRoles($roleIdentifiersToSet)) {
+                // add any non-FE roles from the current roles to keep them unchanged
+                $roleIdentifiersToSet = $this->addExistingNonFrontendUserRoles($roleIdentifiersToSet, $account);
+
+                $this->userService->setRolesForAccount($account, $roleIdentifiersToSet);
+                $user = $this->userService->getUser($account->getAccountIdentifier(), $account->getAuthenticationProviderName());
+                $password = array_shift($password);
+                if (trim((string)$password) !== '') {
+                    $this->userService->setUserPassword($user, $password);
+                }
+                $this->accountRepository->update($account);
+
+                $this->addFlashMessage('The account has been updated.', 'Account updated');
+                $this->redirect('edit', null, null, ['user' => $user]);
+            } else {
+                $this->throwStatus(403, 'Not allowed to assign the given roles');
+            }
         } else {
             $this->throwStatus(403, 'Not allowed to update that account');
         }
@@ -320,5 +332,65 @@ class ModuleController extends AbstractModuleController
         return array_filter($availableRoles, static function (Role $role) {
             return $role->getIdentifier() === self::$roleIdentifier || array_key_exists(self::$roleIdentifier, $role->getAllParentRoles());
         });
+    }
+
+    /**
+     * Returns an array with all roles of a user's accounts, including parent roles, the "Everybody" role and the
+     * "AuthenticatedUser" role, assuming that the user is logged in.
+     *
+     * @param Account $account
+     * @return Role[] indexed by role identifier
+     */
+    private function getAllRolesForAccount(Account $account): array
+    {
+        $roles = [];
+        $accountRoles = $account->getRoles();
+        foreach ($accountRoles as $currentRole) {
+            if (!in_array($currentRole, $roles, true)) {
+                $roles[$currentRole->getIdentifier()] = $currentRole;
+            }
+            foreach ($currentRole->getAllParentRoles() as $currentParentRole) {
+                if (!in_array($currentParentRole, $roles, true)) {
+                    $roles[$currentParentRole->getIdentifier()] = $currentParentRole;
+                }
+            }
+        }
+
+        return $roles;
+    }
+
+    /**
+     * Returns whether it is allowed to add/remove the changed roles.
+     *
+     * - Roles not being "FE user roles" can never be set
+     *
+     * @param array $roleIdentifiersToSet
+     * @return bool
+     */
+    private function onlyFrontendRoles(array $roleIdentifiersToSet): bool
+    {
+        $frontendUserRoleIdentifiers = array_keys($this->getFrontendUserRoles());
+
+        return array_diff($roleIdentifiersToSet, $frontendUserRoleIdentifiers) === [];
+    }
+
+    /**
+     * Add any non-FE roles from the current $account roles to $roleIdentifiersToSet
+     *
+     * @param array $roleIdentifiersToSet
+     * @param Account $account
+     * @return array
+     */
+    protected function addExistingNonFrontendUserRoles(array $roleIdentifiersToSet, Account $account): array
+    {
+        return array_unique(array_merge(
+            $roleIdentifiersToSet,
+            array_keys(array_filter(
+                $this->getAllRolesForAccount($account),
+                static function (Role $role) {
+                    return !$role->isAbstract() && !($role->getIdentifier() === self::$roleIdentifier || array_key_exists(self::$roleIdentifier, $role->getAllParentRoles()));
+                }
+            ))
+        ));
     }
 }
