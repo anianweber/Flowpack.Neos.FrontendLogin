@@ -19,7 +19,6 @@ use Neos\Flow\Mvc\Exception\UnsupportedRequestTypeException;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Security\Account;
 use Neos\Flow\Security\AccountRepository;
-use Neos\Flow\Security\Exception\NoSuchRoleException;
 use Neos\Flow\Security\Policy\PolicyService;
 use Neos\Flow\Security\Policy\Role;
 use Neos\Neos\Controller\Module\AbstractModuleController;
@@ -121,14 +120,14 @@ class ModuleController extends AbstractModuleController
      * @param string $username The user name (ie. account identifier) of the new user
      * @param array $password Expects an array in the format array('<password>', '<password confirmation>')
      * @param User $user The user to create
-     * @param \DateTime $expirationDate
+     * @param \DateTime|null $expirationDate
      * @param array $roleIdentifiers Identifiers of roles to assign to account
      * @return void
      * @Flow\Validate(argumentName="username", type="\Neos\Flow\Validation\Validator\NotEmptyValidator")
      * @Flow\Validate(argumentName="username", type="\Neos\Neos\Validation\Validator\UserDoesNotExistValidator")
      * @Flow\Validate(argumentName="password", type="\Neos\Neos\Validation\Validator\PasswordValidator", options={ "allowEmpty"=0, "minimum"=1, "maximum"=255 })
      */
-    public function createAction($username, array $password, User $user, ?\DateTime $expirationDate, array $roleIdentifiers = []): void
+    public function createAction(string $username, array $password, User $user, ?\DateTime $expirationDate, array $roleIdentifiers = []): void
     {
         // make sure self::$roleIdentifier is always added
         $roleIdentifiers = array_unique(array_merge($roleIdentifiers, [self::$roleIdentifier]));
@@ -213,7 +212,6 @@ class ModuleController extends AbstractModuleController
      * @return void
      * @throws NeosDomainException
      * @throws UnsupportedRequestTypeException
-     * @throws NoSuchRoleException
      */
     public function editAccountAction(Account $account): void
     {
@@ -314,15 +312,13 @@ class ModuleController extends AbstractModuleController
     /**
      * Returns all roles that are (indirect) heirs of self::$roleIdentifier
      *
-     * @return Role[]
-     * @throws NoSuchRoleException
+     * @return Role[] indexed by role identifier
      */
     protected function getFrontendUserRoles(): array
     {
         $availableRoles = $this->policyService->getRoles();
-        $frontendUserRole = $this->policyService->getRole(self::$roleIdentifier);
-        return array_filter($availableRoles, static function (Role $role) use ($frontendUserRole) {
-            return $role->getIdentifier() === self::$roleIdentifier || array_key_exists($frontendUserRole->getIdentifier(), $role->getAllParentRoles());
+        return array_filter($availableRoles, static function (Role $role) {
+            return $role->getIdentifier() === self::$roleIdentifier || array_key_exists(self::$roleIdentifier, $role->getAllParentRoles());
         });
     }
 }
