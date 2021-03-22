@@ -19,6 +19,8 @@ use Neos\Flow\Mvc\Exception\UnsupportedRequestTypeException;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Security\Account;
 use Neos\Flow\Security\AccountRepository;
+use Neos\Flow\Security\Policy\PolicyService;
+use Neos\Flow\Security\Policy\Role;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Neos\Domain\Exception as NeosDomainException;
 use Neos\Neos\Domain\Model\User;
@@ -34,6 +36,12 @@ class ModuleController extends AbstractModuleController
      * @var UserService
      */
     protected $userService;
+
+    /**
+     * @Flow\Inject
+     * @var PolicyService
+     */
+    protected $policyService;
 
     /**
      * @Flow\Inject
@@ -96,14 +104,13 @@ class ModuleController extends AbstractModuleController
     /**
      * Renders a form for creating a new user
      *
-     * @param User $user
      * @return void
      */
-    public function newAction(User $user = null): void
+    public function newAction(): void
     {
         $this->view->assignMultiple([
             'currentUser' => $this->currentUser,
-            'user' => $user
+            'availableRoles' => $this->getFrontendUserRoles()
         ]);
     }
 
@@ -113,24 +120,31 @@ class ModuleController extends AbstractModuleController
      * @param string $username The user name (ie. account identifier) of the new user
      * @param array $password Expects an array in the format array('<password>', '<password confirmation>')
      * @param User $user The user to create
-     * @param \DateTime $expirationDate
+     * @param \DateTime|null $expirationDate
+     * @param array $roleIdentifiers Identifiers of roles to assign to account
      * @return void
      * @Flow\Validate(argumentName="username", type="\Neos\Flow\Validation\Validator\NotEmptyValidator")
      * @Flow\Validate(argumentName="username", type="\Neos\Neos\Validation\Validator\UserDoesNotExistValidator")
      * @Flow\Validate(argumentName="password", type="\Neos\Neos\Validation\Validator\PasswordValidator", options={ "allowEmpty"=0, "minimum"=1, "maximum"=255 })
      */
-    public function createAction($username, array $password, User $user, ?\DateTime $expirationDate): void
+    public function createAction(string $username, array $password, User $user, ?\DateTime $expirationDate, array $roleIdentifiers = []): void
     {
-        $user = $this->userService->addUser($username, $password[0], $user, [self::$roleIdentifier], self::$authenticationProviderName);
+        // make sure self::$roleIdentifier is always added
+        $roleIdentifiersToSet = array_unique(array_merge($roleIdentifiers, [self::$roleIdentifier]));
+        if ($this->onlyFrontendRoles($roleIdentifiersToSet)) {
+            $user = $this->userService->addUser($username, $password[0], $user, $roleIdentifiersToSet, self::$authenticationProviderName);
 
-        if ($expirationDate !== null) {
-            /** @var Account $account */
-            $account = $user->getAccounts()->first();
-            $expirationDate->setTime(0, 0, 0);
-            $account->setExpirationDate($expirationDate);
+            if ($expirationDate !== null) {
+                /** @var Account $account */
+                $account = $user->getAccounts()->first();
+                $expirationDate->setTime(0, 0);
+                $account->setExpirationDate($expirationDate);
+            }
+
+            $this->addFlashMessage('The user "%s" has been created.', 'User created', Message::SEVERITY_OK, [htmlspecialchars($username)], 1416225561);
+        } else {
+            $this->throwStatus(403, 'Not allowed to assign the given roles');
         }
-
-        $this->addFlashMessage('The user "%s" has been created.', 'User created', Message::SEVERITY_OK, [htmlspecialchars($username)], 1416225561);
         $this->redirect('index');
     }
 
@@ -209,7 +223,8 @@ class ModuleController extends AbstractModuleController
             $this->view->assignMultiple([
                 'account' => $account,
                 'user' => $this->userService->getUser($account->getAccountIdentifier(), $account->getAuthenticationProviderName()),
-                'expirationDate' => $account->getExpirationDate()
+                'expirationDate' => $account->getExpirationDate(),
+                'availableRoles' => $this->getFrontendUserRoles()
             ]);
         } else {
             $this->throwStatus(403, 'Not allowed to edit that account');
@@ -220,6 +235,7 @@ class ModuleController extends AbstractModuleController
      * Update a given account
      *
      * @param Account $account The account to update
+     * @param array $roleIdentifiers Identifiers of roles to assign to account
      * @param array $password Expects an array in the format array('<password>', '<password confirmation>')
      * @Flow\Validate(argumentName="password", type="\Neos\Neos\Validation\Validator\PasswordValidator", options={ "allowEmpty"=1, "minimum"=1, "maximum"=255 })
      * @return void
@@ -227,18 +243,29 @@ class ModuleController extends AbstractModuleController
      * @throws IllegalObjectTypeException
      * @throws UnsupportedRequestTypeException
      */
-    public function updateAccountAction(Account $account, array $password = []): void
+    public function updateAccountAction(Account $account, array $roleIdentifiers = [], array $password = []): void
     {
         if ($this->checkAccount($account)) {
-            $user = $this->userService->getUser($account->getAccountIdentifier(), $account->getAuthenticationProviderName());
-            $password = array_shift($password);
-            if (trim((string)$password) !== '') {
-                $this->userService->setUserPassword($user, $password);
-            }
-            $this->accountRepository->update($account);
+            // make sure self::$roleIdentifier is always added
+            $roleIdentifiersToSet = array_unique(array_merge($roleIdentifiers, [self::$roleIdentifier]));
 
-            $this->addFlashMessage('The account has been updated.', 'Account updated', Message::SEVERITY_OK);
-            $this->redirect('edit', null, null, ['user' => $user]);
+            if ($this->onlyFrontendRoles($roleIdentifiersToSet)) {
+                // add any non-FE roles from the current roles to keep them unchanged
+                $roleIdentifiersToSet = $this->addExistingNonFrontendUserRoles($roleIdentifiersToSet, $account);
+
+                $this->userService->setRolesForAccount($account, $roleIdentifiersToSet);
+                $user = $this->userService->getUser($account->getAccountIdentifier(), $account->getAuthenticationProviderName());
+                $password = array_shift($password);
+                if (trim((string)$password) !== '') {
+                    $this->userService->setUserPassword($user, $password);
+                }
+                $this->accountRepository->update($account);
+
+                $this->addFlashMessage('The account has been updated.', 'Account updated');
+                $this->redirect('edit', null, null, ['user' => $user]);
+            } else {
+                $this->throwStatus(403, 'Not allowed to assign the given roles');
+            }
         } else {
             $this->throwStatus(403, 'Not allowed to update that account');
         }
@@ -292,5 +319,78 @@ class ModuleController extends AbstractModuleController
         }
 
         return false;
+    }
+
+    /**
+     * Returns all roles that are (indirect) heirs of self::$roleIdentifier
+     *
+     * @return Role[] indexed by role identifier
+     */
+    protected function getFrontendUserRoles(): array
+    {
+        $availableRoles = $this->policyService->getRoles();
+        return array_filter($availableRoles, static function (Role $role) {
+            return $role->getIdentifier() === self::$roleIdentifier || array_key_exists(self::$roleIdentifier, $role->getAllParentRoles());
+        });
+    }
+
+    /**
+     * Returns an array with all roles of a user's accounts, including parent roles, the "Everybody" role and the
+     * "AuthenticatedUser" role, assuming that the user is logged in.
+     *
+     * @param Account $account
+     * @return Role[] indexed by role identifier
+     */
+    private function getAllRolesForAccount(Account $account): array
+    {
+        $roles = [];
+        $accountRoles = $account->getRoles();
+        foreach ($accountRoles as $currentRole) {
+            if (!in_array($currentRole, $roles, true)) {
+                $roles[$currentRole->getIdentifier()] = $currentRole;
+            }
+            foreach ($currentRole->getAllParentRoles() as $currentParentRole) {
+                if (!in_array($currentParentRole, $roles, true)) {
+                    $roles[$currentParentRole->getIdentifier()] = $currentParentRole;
+                }
+            }
+        }
+
+        return $roles;
+    }
+
+    /**
+     * Returns whether it is allowed to add/remove the changed roles.
+     *
+     * - Roles not being "FE user roles" can never be set
+     *
+     * @param array $roleIdentifiersToSet
+     * @return bool
+     */
+    private function onlyFrontendRoles(array $roleIdentifiersToSet): bool
+    {
+        $frontendUserRoleIdentifiers = array_keys($this->getFrontendUserRoles());
+
+        return array_diff($roleIdentifiersToSet, $frontendUserRoleIdentifiers) === [];
+    }
+
+    /**
+     * Add any non-FE roles from the current $account roles to $roleIdentifiersToSet
+     *
+     * @param array $roleIdentifiersToSet
+     * @param Account $account
+     * @return array
+     */
+    protected function addExistingNonFrontendUserRoles(array $roleIdentifiersToSet, Account $account): array
+    {
+        return array_unique(array_merge(
+            $roleIdentifiersToSet,
+            array_keys(array_filter(
+                $this->getAllRolesForAccount($account),
+                static function (Role $role) {
+                    return !$role->isAbstract() && !($role->getIdentifier() === self::$roleIdentifier || array_key_exists(self::$roleIdentifier, $role->getAllParentRoles()));
+                }
+            ))
+        ));
     }
 }
