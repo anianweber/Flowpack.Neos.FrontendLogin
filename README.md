@@ -72,7 +72,7 @@ add the following configuration there:
 -
   requestFilter: 'isPackage("Flowpack.Neos.FrontendLogin") && isController("Authentication") && isAction("index")'
   options:
-    templatePathAndFilename: 'resource://Acme.YourPackage/Private/Templates/Authenticate/Index.html'
+    templatePathAndFilename: 'resource://Acme.YourPackage/Private/Templates/Authentication/Index.html'
 ```
 
 Adjust the actual value in ``templatePathAndFilename`` to your needs and copy the [original template](Resources/Private/Templates/Authentication/Index.html)
