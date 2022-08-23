@@ -70,7 +70,7 @@ add the following configuration there:
 
 ```yaml
 -
-  requestFilter: 'isPackage("Flowpack.Neos.FrontendLogin") && isController("Authentication") && isAction("index")'
+  requestFilter: 'parentRequest.isPackage("Neos.Neos") && isFormat("html") && isPackage("Flowpack.Neos.FrontendLogin")'
   options:
     templatePathAndFilename: 'resource://Acme.YourPackage/Private/Templates/Authentication/Index.html'
 ```
